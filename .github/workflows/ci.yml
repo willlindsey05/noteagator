@@ -41,7 +41,7 @@ jobs:
           python -m pip install .
 
       - name: Run tests
-        run: pytest -q
+        run: pytest
   lint:
     name: ruff / black (check)
     runs-on: ubuntu-latest
