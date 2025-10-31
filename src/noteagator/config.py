@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from functools import cached_property
+from pathlib import Path
 from types import MappingProxyType
 from typing import Any
 
@@ -106,6 +107,10 @@ class Config:
         if not self._config_data.get("cwd") or self._config_data["cwd"] is None:
             self._config_data["cwd"] = self.default_notebook_path
             changed = True
+        cwd_path = Path(self._config_data.get("cwd"))
+        if not cwd_path.is_dir():
+            self._config_data["cwd"] = self._config_data.get("base")
+            changed = True
         if (
             not self._config_data.get("print_mode")
             or self._config_data["print_mode"] is None
@@ -117,7 +122,19 @@ class Config:
     def return_file_path(self, index) -> str:
         entry = (self.display_index or {}).get(index) or {}
         node_type = entry.get("type")
+        path = entry.get("absolute_path")
         if node_type == "file":
-            return entry.get("absolute_path")
+            if os.path.exists(path):
+                return path
+            else:
+                sys.exit(
+                    (
+                        f"That note no longer exists on disk (index #{index}).\n"
+                        f"Previously at: {entry.get('absolute_path')}\n"
+                        "Your display index is out of date.\n"
+                        "Run `ngt ls` (or `ngt ls -R`) or use "
+                        "`ngt search <term>` to rebuild the display index."
+                    )
+                )
         else:
             sys.exit("Invalid Selection")

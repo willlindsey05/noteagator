@@ -10,10 +10,10 @@ where = ["src"]
 
 [project]
 name = "noteagator"
-version = "0.1.0"
+version = "0.1.1"
 description = "Notebook Navigator a keyboard first note tool"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "William Lindsey" }]
 keywords = ["cli", "notes", "markdown", "productivity"]
